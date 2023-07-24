@@ -37,6 +37,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
+getAnalytics(app);
+
 const AppLayout = () => (
   <>
     <Sidebar />
