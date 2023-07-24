@@ -1,7 +1,8 @@
 import React from "react";
-import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
-import * as IoIcons from "react-icons/io";
+import * as MdIcons from "react-icons/md";
+import * as GaIcons from "react-icons/gi";
+import * as CgIcons from "react-icons/cg";
 
 export const SidebarData = [
   {
@@ -13,25 +14,25 @@ export const SidebarData = [
   {
     title: "Top",
     path: "/top",
-    icon: <AiIcons.AiFillHome />,
+    icon: <MdIcons.MdFavorite />,
     cName: "nav-text",
   },
   {
     title: "Recommendation",
     path: "/recommendation",
-    icon: <IoIcons.IoIosPaper />,
+    icon: <MdIcons.MdRecommend />,
     cName: "nav-text",
   },
   {
     title: "Generate",
     path: "/generate",
-    icon: <FaIcons.FaCartPlus />,
+    icon: <GaIcons.GiMusicalNotes />,
     cName: "nav-text",
   },
   {
     title: "Profile Data",
     path: "/profile-data",
-    icon: <FaIcons.FaCartPlus />,
+    icon: <CgIcons.CgProfile />,
     cName: "nav-text",
   },
 ];

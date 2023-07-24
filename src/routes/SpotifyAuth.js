@@ -11,7 +11,7 @@ const SpotifyAuth = () => {
         const scopes = ['user-read-private', 'user-read-email']; // Add required scopes
 
         // Redirect the user to the Spotify authorization URL
-        const authEndpoint = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scopes.join('%20')}&response_type=token`;
+        const authEndpoint = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scopes.join('%20')}&response_type=token&show_dialog=true`;
 
         window.location.href = authEndpoint;
       } catch (error) {

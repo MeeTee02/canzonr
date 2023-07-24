@@ -14,6 +14,30 @@ import Home from "./routes/Home";
 import ProfileData from "./routes/ProfileData";
 import SpotifyAuth from "./routes/SpotifyAuth";
 import AccessTokenCallback from "./routes/AccessTokenCallback";
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyD4kmF7DoaTt2gUkZYkYS4DvQiIfSsNEU8",
+
+  authDomain: "canzonr-81dff.firebaseapp.com",
+
+  projectId: "canzonr-81dff",
+
+  storageBucket: "canzonr-81dff.appspot.com",
+
+  messagingSenderId: "1064174375812",
+
+  appId: "1:1064174375812:web:011173abef822b02eb43d1",
+
+  measurementId: "G-JDF754J59T"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const analytics = getAnalytics(app);
 
 const AppLayout = () => (
   <>
