@@ -9,13 +9,14 @@ import Generate from "./routes/Generate";
 import Top from "./routes/Top";
 import Recommendation from "./routes/Recommendation";
 import Sidebar from "./components/Sidebar";
-import "./App.css";
+import "./App.scss";
 import Home from "./routes/Home";
 import ProfileData from "./routes/ProfileData";
 import SpotifyAuth from "./routes/SpotifyAuth";
 import AccessTokenCallback from "./routes/AccessTokenCallback";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import Artists from "./routes/Artists";
 
 const firebaseConfig = {
 
@@ -57,6 +58,20 @@ const router = createBrowserRouter([
       {
         path: "/top",
         element: <Top />,
+        children: [
+          {
+            path: 'artists',
+            element: <Artists/>,
+          },
+          {
+            path: 'tracks',
+            element: <div>Child Route 2</div>,
+          },
+          {
+            path: 'genres',
+            element: <div>Child Route 3</div>,
+          },
+        ],
       },
       {
         path: "/recommendation",

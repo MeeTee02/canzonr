@@ -1,0 +1,28 @@
+.user-profile {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: #1ed760;
+
+  > img {
+    width: 300px;
+    height: 500px;
+  }
+}
+
+.user-data {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 10px;
+    height: 500px;
+    color: #1ed760;
+
+    a:link {
+        color: #1ed760;
+    }
+
+    a:hover {
+        color: #fff;
+    }
+}
