@@ -58,20 +58,18 @@ const router = createBrowserRouter([
       {
         path: "/top",
         element: <Top />,
-        children: [
-          {
-            path: 'artists',
-            element: <Artists/>,
-          },
-          {
-            path: 'tracks',
-            element: <div>Child Route 2</div>,
-          },
-          {
-            path: 'genres',
-            element: <div>Child Route 3</div>,
-          },
-        ],
+      },
+      {
+        path: "/artists",
+        element: <Artists />,
+      },
+      {
+        path: "/top/tracks",
+        element: <div>Child Route 2</div>,
+      },
+      {
+        path: "/top/genres",
+        element: <div>Child Route 3</div>,
       },
       {
         path: "/recommendation",

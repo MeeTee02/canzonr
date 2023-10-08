@@ -35,7 +35,7 @@ function ProfileData() {
   return (
     <div className="profile-data">
       <div className="user-profile">
-        <img src={userData.images[1].url ? userData.images[1].url : '/images/profile-image-placeholder.jpg'} alt="Profile Photo"/>
+        <img src={userData.images[1].url ? userData.images[1].url : '/images/profile-image-placeholder.jpg'} alt=""/>
       </div>
       <div className="user-data">
       {userData.display_name && <p>Display Name: {userData.display_name}</p>}
