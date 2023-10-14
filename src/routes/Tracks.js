@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "../styles/artists.scss"; // Import your own CSS file for styling
-import ArtistCard from "../components/ArtistCard";
+import "../styles/tracks.scss"; // Import your own CSS file for styling
 import Button from "@mui/material/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import TrackCard from "../components/TrackCard";
 
-function Artists() {
-  const [artistsData, setArtistsData] = useState(null);
+function Tracks() {
+  const [tracksData, setTracksData] = useState(null);
   const [requestLimit, setRequestLimit] = useState(10);
   const accessToken = sessionStorage.getItem("spotifyAccessToken");
 
@@ -18,23 +18,23 @@ function Artists() {
   const setTimeRange = (time_range) => {
     axios
       .get(
-        `https://api.spotify.com/v1/me/top/artists?time_range=${time_range}`,
+        `https://api.spotify.com/v1/me/top/tracks?time_range=${time_range}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
           params: {
-            limit: requestLimit, // Number of top artists to retrieve
+            limit: requestLimit, // Number of top tracks to retrieve
           },
         }
       )
       .then((response) => {
         // Handle successful response
-        setArtistsData(response.data.items);
+        setTracksData(response.data.items);
       })
       .catch((error) => {
         // Handle error
-        console.error("Error fetching user artists data:", error);
+        console.error("Error fetching user tracks data:", error);
       });
   };
 
@@ -78,15 +78,16 @@ function Artists() {
           <Dropdown.Item eventKey={50}>50</Dropdown.Item>
         </DropdownButton>
       </div>
-      <div className="artists-container">
-        {artistsData ? (
-          artistsData.map((artist, index) => (
-            <ArtistCard
-              imageUrl={artist.images[1].url}
-              name={artist.name}
+      <div className="tracks-container">
+        {tracksData ? (
+          tracksData.map((track, index) => (
+            <TrackCard
+              artists={track.artists}
+              imageUrl={track.album.images[1].url}
+              name={track.name}
               index={++index}
-              artistId={artist.id}
-              key={artist.id}
+              trackId={track.id}
+              key={track.id}
             />
           ))
         ) : (
@@ -97,4 +98,4 @@ function Artists() {
   );
 }
 
-export default Artists;
+export default Tracks;

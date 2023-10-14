@@ -17,6 +17,8 @@ import AccessTokenCallback from "./routes/AccessTokenCallback";
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import Artists from "./routes/Artists";
+import Tracks from "./routes/Tracks";
+import Genres from "./routes/Genres";
 
 const firebaseConfig = {
 
@@ -60,16 +62,16 @@ const router = createBrowserRouter([
         element: <Top />,
       },
       {
-        path: "/artists",
+        path: "/top/artists",
         element: <Artists />,
       },
       {
         path: "/top/tracks",
-        element: <div>Child Route 2</div>,
+        element: <Tracks />,
       },
       {
         path: "/top/genres",
-        element: <div>Child Route 3</div>,
+        element: <Genres />,
       },
       {
         path: "/recommendation",
