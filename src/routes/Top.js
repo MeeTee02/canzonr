@@ -15,7 +15,7 @@ function Top() {
         />
         <OptionCard
           imageUrl="/images/tracks.svg"
-          imageText="Songs"
+          imageText="Tracks"
           route="tracks"
         />
         <OptionCard
@@ -24,7 +24,6 @@ function Top() {
           route="genres"
         />
       </div>
-      <Outlet />
     </div>
   );
 }

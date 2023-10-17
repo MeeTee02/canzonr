@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import "../styles/track-card.scss";
 import ReactCardFlip from "react-card-flip";
 
-const TrackCard = ({ artists, imageUrl, name, index, trackId }) => {
+const TrackCard = ({
+  artists,
+  imageUrl,
+  name,
+  index,
+  accessToken,
+  trackUri,
+}) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleFlip = () => {
@@ -23,12 +30,25 @@ const TrackCard = ({ artists, imageUrl, name, index, trackId }) => {
         </div>
       </div>
 
-      <div className="track-back-card-container" onClick={handleFlip}>
-        {artists ? (artists.map((artist, index) => {
-          return <div className="artist" key={index}>
-            {artist.name}
-          </div>;
-        })) : (<p>Loading...</p>)}
+      <div className="track-back-card-container">
+        {artists ? (
+          artists.map((artist, index) => {
+            return (
+              <div className="artist" onClick={handleFlip} key={index}>
+                {artist.name}
+              </div>
+            );
+          })
+        ) : (
+          <p>Loading...</p>
+        )}
+        {isFlipped ? (
+          <div className="play-track">
+            Web player soon
+          </div>
+        ) : (
+          <div></div>
+        )}
       </div>
     </ReactCardFlip>
   );

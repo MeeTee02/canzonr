@@ -19,6 +19,7 @@ import { getAnalytics } from "firebase/analytics";
 import Artists from "./routes/Artists";
 import Tracks from "./routes/Tracks";
 import Genres from "./routes/Genres";
+import ArtistRecommendations from "./routes/ArtistRecommendations";
 
 const firebaseConfig = {
 
@@ -75,6 +76,14 @@ const router = createBrowserRouter([
       },
       {
         path: "/recommendation",
+        element: <Recommendation />,
+      },
+      {
+        path: "/recommendation/artists",
+        element: <ArtistRecommendations />,
+      },
+      {
+        path: "/recommendation/tracks",
         element: <Recommendation />,
       },
       {

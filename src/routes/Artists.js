@@ -31,6 +31,7 @@ function Artists() {
       .then((response) => {
         // Handle successful response
         setArtistsData(response.data.items);
+        console.log(response.data.items);
       })
       .catch((error) => {
         // Handle error

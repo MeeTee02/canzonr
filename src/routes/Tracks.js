@@ -86,7 +86,8 @@ function Tracks() {
               imageUrl={track.album.images[1].url}
               name={track.name}
               index={++index}
-              trackId={track.id}
+              accessToken={accessToken}
+              trackUri={track.uri}
               key={track.id}
             />
           ))
