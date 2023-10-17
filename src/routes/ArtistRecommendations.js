@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "../styles/artist-recommendations.scss"; // Import your own CSS file for styling
 import Box from "@mui/material/Box";
@@ -15,6 +15,7 @@ function ArtistRecommendations() {
   const [selectedArtistId, setSelectedArtistId] = useState(null);
   const requestLimit = 10;
   const accessToken = sessionStorage.getItem("spotifyAccessToken");
+  const recommendationsRef = useRef();
 
   const getUserTopArtists = () => {
     axios
@@ -73,7 +74,6 @@ function ArtistRecommendations() {
       .then((response) => {
         // Handle successful response
         setRecommendedArtists(response.data.artists);
-        console.log(response.data.artists);
       })
       .catch((error) => {
         // Handle error
@@ -95,6 +95,7 @@ function ArtistRecommendations() {
 
   const handleArtistBadgeClick = (artistId) => {
     setSelectedArtistId(artistId);
+    recommendationsRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -166,7 +167,7 @@ function ArtistRecommendations() {
           )}
         </div>
       </div>
-      <div className="artist-container">
+      <div className="artist-container" ref={recommendationsRef}>
         <div className="title">Artist Recommendations</div>
         <div className="artist-list">
           {recommendedArtists ? (
