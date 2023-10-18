@@ -10,7 +10,7 @@ import { debounce } from "../helpers/GeneralHelpers";
 function ArtistRecommendations() {
   const [searchedArtists, setSearchedArtists] = useState([]);
   const [userTopArtists, setUserTopArtists] = useState(null);
-  const [recommendedArtists, setRecommendedArtists] = useState(null);
+  const [recommendedArtists, setRecommendedArtists] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedArtistId, setSelectedArtistId] = useState(null);
   const requestLimit = 10;
@@ -93,9 +93,14 @@ function ArtistRecommendations() {
     }
   };
 
-  const handleArtistBadgeClick = (artistId) => {
-    setSelectedArtistId(artistId);
-    recommendationsRef.current.scrollIntoView({ behavior: "smooth" });
+  const handleArtistBadgeClick = (artistId, isSelected) => {
+
+    if(!isSelected) {
+      setSelectedArtistId(artistId);
+      recommendationsRef.current.scrollIntoView({ behavior: "smooth" });
+    } else {
+      setSelectedArtistId(null);
+    }
   };
 
   useEffect(() => {
@@ -136,7 +141,7 @@ function ArtistRecommendations() {
                   name={artist.name}
                   artistId={artist.id}
                   isSelected={artist.id === selectedArtistId}
-                  onClick={() => handleArtistBadgeClick(artist.id)}
+                  onClick={() => handleArtistBadgeClick(artist.id, artist.id === selectedArtistId)}
                   key={artist.id}
                 />
               ) : null;
@@ -157,7 +162,7 @@ function ArtistRecommendations() {
                   name={artist.name}
                   artistId={artist.id}
                   isSelected={artist.id === selectedArtistId}
-                  onClick={() => handleArtistBadgeClick(artist.id)}
+                  onClick={() => handleArtistBadgeClick(artist.id, artist.id === selectedArtistId)}
                   key={artist.id}
                 />
               ) : null;

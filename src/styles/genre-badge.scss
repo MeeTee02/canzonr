@@ -1,0 +1,14 @@
+.genre-badge {
+    background-color: black;
+    border: 2px solid black;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    padding: 10px;
+    margin: 3px;
+
+    &.active {
+        border: 6px solid greenyellow;
+    }
+}

@@ -1,4 +1,4 @@
-.artist-badge {
+.track-badge {
     display: flex;
     flex-direction: column;
     height: 200px;
@@ -13,7 +13,7 @@
         height: 160px;
     }
 
-    > .artist-name {
+    > .track-name {
         display: flex;
         align-items: center;
         justify-content: center;
