@@ -1,0 +1,52 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    height: 80%;
+    gap: 10px;
+
+    > .seed-container {
+        display: flex;
+        justify-content: space-evenly;
+        width: 90%;
+
+        > .data-sliders-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            flex-wrap: wrap;
+            width: 70%;
+        }
+
+        > Button {
+            width: 30%;
+            height: 30%;
+            align-self: center;
+        }
+    }
+
+    > .type-container {
+        border: 2px solid black;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 90%;
+        gap: 10px;
+        
+
+        > .title {
+            font-size: 24px;
+            align-self: center;
+            font-weight: bold;
+        }
+
+        > .type-list {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    }
+}

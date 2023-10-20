@@ -1,0 +1,10 @@
+.container {
+    display: flex;
+    gap: 30px;
+    width: 50%;
+
+    > .MuiSwitch-root {
+        width: 68px;
+        align-self: self-end;
+    }
+}

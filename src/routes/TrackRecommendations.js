@@ -129,7 +129,7 @@ function TrackRecommendations() {
       })
       .catch((error) => {
         // Handle error
-        console.error("Error fetching user tracks data:", error);
+        console.error("Error fetching all genres data:", error);
       });
   };
 

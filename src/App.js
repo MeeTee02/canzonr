@@ -5,7 +5,6 @@ import {
   RouterProvider,
   Outlet,
 } from "react-router-dom";
-import Generate from "./routes/Generate";
 import Top from "./routes/Top";
 import Recommendation from "./routes/Recommendation";
 import Sidebar from "./components/Sidebar";
@@ -21,6 +20,7 @@ import Tracks from "./routes/Tracks";
 import Genres from "./routes/Genres";
 import ArtistRecommendations from "./routes/ArtistRecommendations";
 import TrackRecommendations from "./routes/TrackRecommendations";
+import GenerateTracks from "./routes/GenerateTracks";
 
 const firebaseConfig = {
 
@@ -89,7 +89,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/generate",
-        element: <Generate />,
+        element: <GenerateTracks />,
       },
       {
         path: "/profile-data",
