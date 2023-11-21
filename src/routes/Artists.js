@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import "../styles/artists.scss"; // Import your own CSS file for styling
 import ArtistCard from "../components/ArtistCard";
 import Button from "@mui/material/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import { getUserTopArtists } from "../helpers/SpotifyApiRequests";
 
 function Artists() {
   const [artistsData, setArtistsData] = useState(null);
@@ -15,32 +15,8 @@ function Artists() {
     setRequestLimit(limit);
   };
 
-  const setTimeRange = (time_range) => {
-    axios
-      .get(
-        `https://api.spotify.com/v1/me/top/artists?time_range=${time_range}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          params: {
-            limit: requestLimit, // Number of top artists to retrieve
-          },
-        }
-      )
-      .then((response) => {
-        // Handle successful response
-        setArtistsData(response.data.items);
-        console.log(response.data.items);
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error fetching user artists data:", error);
-      });
-  };
-
   useEffect(() => {
-    setTimeRange("long_term");
+    getUserTopArtists(accessToken, requestLimit, setArtistsData, "long_term");
   }, []);
 
   return (
@@ -49,21 +25,21 @@ function Artists() {
         <Button
           variant="contained"
           color="success"
-          onClick={() => setTimeRange("short_term")}
+          onClick={() => getUserTopArtists(accessToken, requestLimit, setArtistsData, "short_term")}
         >
           Last 4 weeks
         </Button>
         <Button
           variant="contained"
           color="secondary"
-          onClick={() => setTimeRange("medium_term")}
+          onClick={() => getUserTopArtists(accessToken, requestLimit, setArtistsData, "medium_term")}
         >
           Last 6 months
         </Button>
         <Button
           variant="contained"
           color="error"
-          onClick={() => setTimeRange("long_term")}
+          onClick={() => getUserTopArtists(accessToken, requestLimit, setArtistsData, "long_term")}
         >
           All time
         </Button>

@@ -5,6 +5,7 @@ import GenreBadge from "../components/GenreBadge";
 import DataSlider from "../components/DataSlider";
 import TrackBadge from "../components/TrackBadge";
 import { Button } from "@mui/material";
+import { getAllGenres } from "../helpers/SpotifyApiRequests";
 
 function GenerateTracks() {
   const [allGenres, setAllGenres] = useState(null);
@@ -23,26 +24,8 @@ function GenerateTracks() {
     useState(false);
   const [tempoSwitchChecked, setTempoSwitchChecked] = useState(false);
 
-  const requestLimit = 10;
   const accessToken = sessionStorage.getItem("spotifyAccessToken");
   const recommendationsRef = useRef();
-
-  const getAllGenres = () => {
-    axios
-      .get("https://api.spotify.com/v1/recommendations/available-genre-seeds", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((response) => {
-        // Handle successful response
-        setAllGenres(response.data.genres);
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error fetching all genres data:", error);
-      });
-  };
 
   const getRecommendedTracks = () => {
     console.log(danceabilitySwitchChecked);
@@ -72,8 +55,6 @@ function GenerateTracks() {
       params.target_tempo = tempoValue;
     }
 
-    console.log();
-
     axios
       .get("https://api.spotify.com/v1/recommendations", {
         headers: {
@@ -102,7 +83,7 @@ function GenerateTracks() {
 
   useEffect(() => {
     if (!allGenres) {
-      getAllGenres();
+      getAllGenres(accessToken, setAllGenres);
     }
   }, []);
 

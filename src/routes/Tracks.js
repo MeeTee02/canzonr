@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import "../styles/tracks.scss"; // Import your own CSS file for styling
 import Button from "@mui/material/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import TrackCard from "../components/TrackCard";
+import { getUserTopTracks } from "../helpers/SpotifyApiRequests";
 
 function Tracks() {
   const [tracksData, setTracksData] = useState(null);
@@ -15,31 +15,8 @@ function Tracks() {
     setRequestLimit(limit);
   };
 
-  const setTimeRange = (time_range) => {
-    axios
-      .get(
-        `https://api.spotify.com/v1/me/top/tracks?time_range=${time_range}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          params: {
-            limit: requestLimit, // Number of top tracks to retrieve
-          },
-        }
-      )
-      .then((response) => {
-        // Handle successful response
-        setTracksData(response.data.items);
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error fetching user tracks data:", error);
-      });
-  };
-
   useEffect(() => {
-    setTimeRange("long_term");
+    getUserTopTracks(accessToken, requestLimit, setTracksData, "long_term");
   }, []);
 
   return (
@@ -48,21 +25,21 @@ function Tracks() {
         <Button
           variant="contained"
           color="success"
-          onClick={() => setTimeRange("short_term")}
+          onClick={() => getUserTopTracks(accessToken, requestLimit, setTracksData, "short_term")}
         >
           Last 4 weeks
         </Button>
         <Button
           variant="contained"
           color="secondary"
-          onClick={() => setTimeRange("medium_term")}
+          onClick={() => getUserTopTracks(accessToken, requestLimit, setTracksData, "medium_term")}
         >
           Last 6 months
         </Button>
         <Button
           variant="contained"
           color="error"
-          onClick={() => setTimeRange("long_term")}
+          onClick={() => getUserTopTracks(accessToken, requestLimit, setTracksData, "long_term")}
         >
           All time
         </Button>

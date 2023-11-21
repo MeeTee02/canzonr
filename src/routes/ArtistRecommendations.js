@@ -1,11 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import "../styles/artist-recommendations.scss"; // Import your own CSS file for styling
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import ArtistBadge from "../components/ArtistBadge";
 import { debounce } from "../helpers/GeneralHelpers";
+import {
+  getRecommendedArtists,
+  getSearchedArtists,
+  getUserTopArtists,
+} from "../helpers/SpotifyApiRequests";
 
 function ArtistRecommendations() {
   const [searchedArtists, setSearchedArtists] = useState([]);
@@ -17,85 +21,28 @@ function ArtistRecommendations() {
   const accessToken = sessionStorage.getItem("spotifyAccessToken");
   const recommendationsRef = useRef();
 
-  const getUserTopArtists = () => {
-    axios
-      .get("https://api.spotify.com/v1/me/top/artists?time_range=long_term", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        params: {
-          limit: requestLimit, // Number of top artists to retrieve
-        },
-      })
-      .then((response) => {
-        // Handle successful response
-        setUserTopArtists(response.data.items);
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error fetching user artists data:", error);
-      });
-  };
-
-  const getSearchedArtists = () => {
-    if (searchTerm) {
-      axios
-        .get("https://api.spotify.com/v1/search", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          params: {
-            q: searchTerm,
-            limit: requestLimit, // Number of top artists to retrieve
-            type: "artist",
-          },
-        })
-        .then((response) => {
-          // Handle successful response
-          setSearchedArtists(response.data.artists.items);
-        })
-        .catch((error) => {
-          // Handle error
-          console.error("Error fetching user artists data:", error);
-        });
-    }
-  };
-
-  const getRecommendedArtists = () => {
-    axios
-      .get(
-        `https://api.spotify.com/v1/artists/${selectedArtistId}/related-artists`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
-      .then((response) => {
-        // Handle successful response
-        setRecommendedArtists(response.data.artists);
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error fetching user artists data:", error);
-      });
-  };
-
   const handleSearchQuery = (e) => {
     const searchTerm = e.target.value.trim();
     console.log(searchTerm);
 
     if (searchTerm) {
       setSearchTerm(searchTerm);
-      debounce(getSearchedArtists, 2000);
+      debounce(
+        getSearchedArtists(
+          accessToken,
+          searchTerm,
+          requestLimit,
+          setSearchedArtists
+        ),
+        2000
+      );
     } else {
       setSearchedArtists([]);
     }
   };
 
   const handleArtistBadgeClick = (artistId, isSelected) => {
-
-    if(!isSelected) {
+    if (!isSelected) {
       setSelectedArtistId(artistId);
       recommendationsRef.current.scrollIntoView({ behavior: "smooth" });
     } else {
@@ -105,7 +52,12 @@ function ArtistRecommendations() {
 
   useEffect(() => {
     if (!userTopArtists) {
-      getUserTopArtists();
+      getUserTopArtists(
+        accessToken,
+        requestLimit,
+        setUserTopArtists,
+        "long_term"
+      );
     }
 
     getSearchedArtists();
@@ -113,7 +65,7 @@ function ArtistRecommendations() {
 
   useEffect(() => {
     if (selectedArtistId) {
-      getRecommendedArtists();
+      getRecommendedArtists(accessToken, selectedArtistId, setRecommendedArtists);
     }
   }, [selectedArtistId]);
 
@@ -141,7 +93,12 @@ function ArtistRecommendations() {
                   name={artist.name}
                   artistId={artist.id}
                   isSelected={artist.id === selectedArtistId}
-                  onClick={() => handleArtistBadgeClick(artist.id, artist.id === selectedArtistId)}
+                  onClick={() =>
+                    handleArtistBadgeClick(
+                      artist.id,
+                      artist.id === selectedArtistId
+                    )
+                  }
                   key={artist.id}
                 />
               ) : null;
@@ -162,7 +119,12 @@ function ArtistRecommendations() {
                   name={artist.name}
                   artistId={artist.id}
                   isSelected={artist.id === selectedArtistId}
-                  onClick={() => handleArtistBadgeClick(artist.id, artist.id === selectedArtistId)}
+                  onClick={() =>
+                    handleArtistBadgeClick(
+                      artist.id,
+                      artist.id === selectedArtistId
+                    )
+                  }
                   key={artist.id}
                 />
               ) : null;

@@ -43,6 +43,11 @@ body, html {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+
+  > .auth-button {
+    margin-right: 2rem;
+    width: 10%;
+  }
 }
 
 .menu-bars {

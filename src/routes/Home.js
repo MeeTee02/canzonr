@@ -9,7 +9,7 @@ function Home() {
     const token = sessionStorage.getItem("spotifyAccessToken");
     if (!token) {
       // If token is missing, redirect to /auth page
-      navigate("/auth");
+      navigate("/");
     }
   }, [navigate]);
 

@@ -2,7 +2,6 @@ import React from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import "../styles/top.scss";
 import OptionCard from "../components/OptionCard";
-import { Outlet } from "react-router";
 
 function Top() {
   return (

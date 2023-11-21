@@ -9,6 +9,14 @@ import { debounce } from "../helpers/GeneralHelpers";
 import TrackBadge from "../components/TrackBadge";
 import Button from "@mui/material/Button";
 import GenreBadge from "../components/GenreBadge";
+import {
+  getAllGenres,
+  getRecommendedTracks,
+  getSearchedArtists,
+  getSearchedTracks,
+  getUserTopArtists,
+  getUserTopTracks,
+} from "../helpers/SpotifyApiRequests";
 
 function TrackRecommendations() {
   const [searchedArtists, setSearchedArtists] = useState([]);
@@ -27,134 +35,6 @@ function TrackRecommendations() {
   const recommendationsRef = useRef();
   const artistSearchInput = "input-for-artist";
   const trackSearchInput = "input-for-track";
-
-  const getUserTopArtists = () => {
-    axios
-      .get("https://api.spotify.com/v1/me/top/artists?time_range=long_term", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        params: {
-          limit: requestLimit, // Number of top artists to retrieve
-        },
-      })
-      .then((response) => {
-        // Handle successful response
-        setUserTopArtists(response.data.items);
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error fetching user artists data:", error);
-      });
-  };
-
-  const getSearchedArtists = () => {
-    if (artistSearchTerm) {
-      axios
-        .get("https://api.spotify.com/v1/search", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          params: {
-            q: artistSearchTerm,
-            limit: requestLimit, // Number of top artists to retrieve
-            type: "artist",
-          },
-        })
-        .then((response) => {
-          // Handle successful response
-          setSearchedArtists(response.data.artists.items);
-        })
-        .catch((error) => {
-          // Handle error
-          console.error("Error fetching user artists data:", error);
-        });
-    }
-  };
-
-  const getUserTopTracks = () => {
-    axios
-      .get("https://api.spotify.com/v1/me/top/tracks?time_range=long_term", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        params: {
-          limit: requestLimit, // Number of top artists to retrieve
-        },
-      })
-      .then((response) => {
-        // Handle successful response
-        setUserTopTracks(response.data.items);
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error fetching user tracks data:", error);
-      });
-  };
-
-  const getSearchedTracks = () => {
-    if (trackSearchTerm) {
-      axios
-        .get("https://api.spotify.com/v1/search", {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          params: {
-            q: trackSearchTerm,
-            limit: requestLimit, // Number of top tracks to retrieve
-            type: "track",
-          },
-        })
-        .then((response) => {
-          // Handle successful response
-          setSearchedTracks(response.data.tracks.items);
-        })
-        .catch((error) => {
-          // Handle error
-          console.error("Error fetching user tracks data:", error);
-        });
-    }
-  };
-
-  const getAllGenres = () => {
-    axios
-      .get("https://api.spotify.com/v1/recommendations/available-genre-seeds", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((response) => {
-        // Handle successful response
-        setAllGenres(response.data.genres);
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error fetching all genres data:", error);
-      });
-  };
-
-  const getRecommendedTracks = (artists, tracks, genres) => {
-    axios
-      .get("https://api.spotify.com/v1/recommendations", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        params: {
-          seed_artists: artists,
-          seed_tracks: tracks,
-          seed_genres: genres,
-        },
-      })
-      .then((response) => {
-        // Handle successful response
-        setRecommendedTracks(response.data.tracks);
-        recommendationsRef.current.scrollIntoView({ behavior: "smooth" });
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error fetching recommendation data:", error);
-      });
-  };
 
   const handleSearchQuery = (e, method) => {
     const searchTerm = e.target.value.trim();
@@ -219,28 +99,42 @@ function TrackRecommendations() {
       default:
       // Nothing
     }
-   
   };
 
   useEffect(() => {
-    getSearchedArtists();
+    getSearchedArtists(
+      accessToken,
+      artistSearchTerm,
+      requestLimit,
+      setSearchedArtists
+    );
   }, [artistSearchTerm]);
 
   useEffect(() => {
-    getSearchedTracks();
+    getSearchedTracks(
+      accessToken,
+      trackSearchTerm,
+      requestLimit,
+      setSearchedTracks
+    );
   }, [trackSearchTerm]);
 
   useEffect(() => {
     if (!userTopArtists) {
-      getUserTopArtists();
+      getUserTopArtists(
+        accessToken,
+        requestLimit,
+        setUserTopArtists,
+        "long_term"
+      );
     }
 
     if (!userTopTracks) {
-      getUserTopTracks();
+      getUserTopTracks(accessToken, requestLimit, setUserTopTracks);
     }
 
     if (!allGenres) {
-      getAllGenres();
+      getAllGenres(accessToken, setAllGenres);
     }
   }, []);
 
@@ -274,6 +168,9 @@ function TrackRecommendations() {
           color="success"
           onClick={() =>
             getRecommendedTracks(
+              accessToken,
+              setRecommendedTracks,
+              recommendationsRef,
               selectedArtists.join(","),
               selectedTracks.join(","),
               selectedGenres.join(",")

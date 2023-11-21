@@ -1,6 +1,5 @@
 import React from "react";
 import "../styles/genre-card.scss";
-import ReactCardFlip from "react-card-flip";
 
 const GenreCard = ({ name, index }) => {
   return (

@@ -21,6 +21,7 @@ import Genres from "./routes/Genres";
 import ArtistRecommendations from "./routes/ArtistRecommendations";
 import TrackRecommendations from "./routes/TrackRecommendations";
 import GenerateTracks from "./routes/GenerateTracks";
+import 'firebase/firestore';
 
 const firebaseConfig = {
 
