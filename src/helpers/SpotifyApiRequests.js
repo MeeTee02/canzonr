@@ -1,57 +1,69 @@
 import axios from "axios";
 
-export const getUserTopArtists = (
+export const getUserTopArtists = async (
   accessToken,
   requestLimit,
   setUserTopArtists,
   timeRange,
   setGenresData = null
 ) => {
-  axios
-    .get(`https://api.spotify.com/v1/me/top/artists?time_range=${timeRange}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      params: {
-        limit: requestLimit, // Number of top artists to retrieve
-      },
-    })
-    .then((response) => {
-      // Handle successful response
-      setUserTopArtists(response.data.items);
-      if (setGenresData) {
-        calculateTopGenres(response.data.items, setGenresData);
+  let userTopArtists = [];
+  let userTopGenres = [];
+
+  try {
+    const response = await axios.get(
+      `https://api.spotify.com/v1/me/top/artists?time_range=${timeRange}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: {
+          limit: requestLimit,
+        },
       }
-    })
-    .catch((error) => {
-      // Handle error
-      console.error("Error fetching user artists data:", error);
-    });
+    );
+
+    userTopArtists = response.data.items;
+    setUserTopArtists(userTopArtists);
+
+    if (setGenresData) {
+      userTopGenres = calculateTopGenres(userTopArtists, setGenresData);
+    }
+
+    return { userTopArtists, userTopGenres };
+  } catch (error) {
+    console.error("Error fetching user artists data:", error);
+    throw error; // Re-throw the error so that the caller can handle it if needed
+  }
 };
 
-export const getUserTopTracks = (
+export const getUserTopTracks = async (
   accessToken,
   requestLimit,
   setUserTopTracks,
   timeRange
 ) => {
-  axios
-    .get(`https://api.spotify.com/v1/me/top/tracks?time_range=${timeRange}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      params: {
-        limit: requestLimit, // Number of top artists to retrieve
-      },
-    })
-    .then((response) => {
-      // Handle successful response
-      setUserTopTracks(response.data.items);
-    })
-    .catch((error) => {
-      // Handle error
-      console.error("Error fetching user tracks data:", error);
-    });
+  try {
+    const response = await axios.get(
+      `https://api.spotify.com/v1/me/top/tracks?time_range=${timeRange}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: {
+          limit: requestLimit,
+        },
+      }
+    );
+
+    const userTopTracks = response.data.items;
+    setUserTopTracks(userTopTracks);
+
+    return userTopTracks;
+  } catch (error) {
+    console.error("Error fetching user tracks data:", error);
+    throw error;
+  }
 };
 
 export const getSearchedArtists = (
@@ -159,41 +171,120 @@ export const getRecommendedTracks = (
     });
 };
 
-export const getRecommendedArtists = (accessToken, selectedArtistId, setRecommendedArtists) => {
-    axios
-      .get(
-        `https://api.spotify.com/v1/artists/${selectedArtistId}/related-artists`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      )
-      .then((response) => {
-        // Handle successful response
-        setRecommendedArtists(response.data.artists);
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error fetching user artists data:", error);
-      });
-  };
-
-export const getProfileData = (accessToken, setUserData) => {
-    axios
-      .get("https://api.spotify.com/v1/me", {
+export const getRecommendedArtists = (
+  accessToken,
+  selectedArtistId,
+  setRecommendedArtists
+) => {
+  axios
+    .get(
+      `https://api.spotify.com/v1/artists/${selectedArtistId}/related-artists`,
+      {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-      })
-      .then((response) => {
-        // Handle successful response
-        setUserData(response.data);
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error fetching user profile data:", error);
-      });
+      }
+    )
+    .then((response) => {
+      // Handle successful response
+      setRecommendedArtists(response.data.artists);
+    })
+    .catch((error) => {
+      // Handle error
+      console.error("Error fetching user artists data:", error);
+    });
+};
+
+export const getProfileData = async (accessToken, setUserData) => {
+  try {
+    const response = await axios.get("https://api.spotify.com/v1/me", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    // Handle successful response
+    setUserData(response.data);
+    return response.data;
+  } catch (error) {
+    // Handle error
+    console.error("Error fetching user profile data:", error);
+    throw error; // Re-throw the error so that the caller can handle it if needed
+  }
+};
+
+export const saveLastLoginUserData = async (
+  accessToken,
+  requestLimit,
+  setUserTopArtists,
+  setUserTopGenres,
+  setUserTopTracks
+) => {
+  const artists = new Map();
+  const tracks = new Map();
+  const genres = new Map();
+
+  try {
+    const userTopArtistsShortTerm = await getUserTopArtists(
+      accessToken,
+      requestLimit,
+      setUserTopArtists,
+      "short_term",
+      setUserTopGenres
+    );
+    artists.set("lastFourWeeks", userTopArtistsShortTerm.userTopArtists);
+    genres.set("lastFourWeeks", userTopArtistsShortTerm.userTopGenres);
+
+    const userTopArtistsMediumTerm = await getUserTopArtists(
+      accessToken,
+      requestLimit,
+      setUserTopArtists,
+      "medium_term",
+      setUserTopGenres
+    );
+    artists.set("lastSixMonths", userTopArtistsMediumTerm.userTopArtists);
+    genres.set("lastSixMonths", userTopArtistsMediumTerm.userTopGenres);
+
+    const userTopArtistsLongTerm = await getUserTopArtists(
+      accessToken,
+      requestLimit,
+      setUserTopArtists,
+      "long_term",
+      setUserTopGenres
+    );
+    artists.set("allTime", userTopArtistsLongTerm.userTopArtists);
+    genres.set("allTime", userTopArtistsLongTerm.userTopGenres);
+
+    const userTopTracksShortTerm = await getUserTopTracks(
+      accessToken,
+      requestLimit,
+      setUserTopTracks,
+      "short_term"
+    );
+    tracks.set("lastFourWeeks", userTopTracksShortTerm);
+
+    const userTopTracksMediumTerm = await getUserTopTracks(
+      accessToken,
+      requestLimit,
+      setUserTopTracks,
+      "medium_term"
+    );
+    tracks.set("lastSixMonths", userTopTracksMediumTerm);
+
+    const userTopTracksLongTerm = await getUserTopTracks(
+      accessToken,
+      requestLimit,
+      setUserTopTracks,
+      "long_term"
+    );
+    tracks.set("allTime", userTopTracksLongTerm);
+
+    return { artists, tracks, genres };
+  } catch (error) {
+    console.error("Error in saveLastLoginUserData:", error);
+    // Handle the error or re-throw it if needed
+    throw error;
+  }
 };
 
 const calculateTopGenres = (artists, setGenresData) => {
@@ -218,5 +309,9 @@ const calculateTopGenres = (artists, setGenresData) => {
 
   genreCountArray.sort((a, b) => b.count - a.count);
 
-  setGenresData(genreCountArray.slice(0, 10));
+  const genres = genreCountArray.slice(0, 10);
+
+  setGenresData(genres);
+
+  return genres;
 };

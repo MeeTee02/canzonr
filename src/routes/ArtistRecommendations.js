@@ -23,7 +23,6 @@ function ArtistRecommendations() {
 
   const handleSearchQuery = (e) => {
     const searchTerm = e.target.value.trim();
-    console.log(searchTerm);
 
     if (searchTerm) {
       setSearchTerm(searchTerm);

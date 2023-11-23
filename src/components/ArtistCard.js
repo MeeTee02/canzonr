@@ -28,7 +28,6 @@ const ArtistCard = ({ imageUrl, name, index, artistId }) => {
             console.log('API Response:', response.data.tracks);
           // Handle successful response
           setTopTracks(response.data.tracks);
-          console.log(topTracks);
         })
         .catch((error) => {
           // Handle error

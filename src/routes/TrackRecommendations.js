@@ -79,12 +79,10 @@ function TrackRecommendations() {
         } else if (limitValid) {
           setSelectedArtists([...selectedArtists, typeId]);
         }
-        console.log(selectedArtists);
         break;
       case "track":
         if (selectedTracks.includes(typeId)) {
           setSelectedTracks(selectedTracks.filter((id) => id !== typeId));
-          console.log(selectedTracks.filter((id) => id !== typeId));
         } else if (limitValid) {
           setSelectedTracks([...selectedTracks, typeId]);
         }

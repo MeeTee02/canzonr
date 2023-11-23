@@ -28,8 +28,6 @@ function GenerateTracks() {
   const recommendationsRef = useRef();
 
   const getRecommendedTracks = () => {
-    console.log(danceabilitySwitchChecked);
-    console.log(danceabilityValue);
 
     const params = {
       seed_genres: selectedGenres.length ? selectedGenres.join(",") : "pop",

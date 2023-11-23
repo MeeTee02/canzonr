@@ -11,6 +11,7 @@ import {
   getProfileData,
   getUserTopArtists,
   getUserTopTracks,
+  saveLastLoginUserData,
 } from "../helpers/SpotifyApiRequests";
 
 function Navbar() {
@@ -26,53 +27,13 @@ function Navbar() {
 
   const accessToken = sessionStorage.getItem("spotifyAccessToken");
 
-  const manageAuth = () => {
-    const artists = new Map();
-    const tracks = new Map();
-    const genres = new Map();
-
+  const manageAuth = async () => {
     if (accessToken) {
-      getUserTopArtists(
-        accessToken,
-        50,
-        setUserTopArtists,
-        "short_term",
-        setUserTopGenres
-      );
-      artists.set("lastFourWeeks", userTopArtists);
-      genres.set("lastFourWeeks", userTopGenres);
 
-      getUserTopArtists(
-        accessToken,
-        50,
-        setUserTopArtists,
-        "medium_term",
-        setUserTopGenres
-      );
-      artists.set("lastSixMonths", userTopArtists);
-      genres.set("lastSixMonths", userTopGenres);
-      console.log(artists);
+      const profileData = await getProfileData(accessToken, setUserData); 
+      const lastLoginUserData = await saveLastLoginUserData(accessToken, 50, setUserTopArtists, setUserTopGenres, setUserTopTracks);
 
-      getUserTopArtists(
-        accessToken,
-        50,
-        setUserTopArtists,
-        "long_term",
-        setUserTopGenres
-      );
-      artists.set("allTime", userTopArtists);
-      genres.set("allTime", userTopGenres);
-
-      getUserTopTracks(accessToken, 50, setUserTopTracks, "short_term");
-      tracks.set("lastFourWeeks", userTopTracks);
-
-      getUserTopTracks(accessToken, 50, setUserTopTracks, "medium_term");
-      tracks.set("lastSixMonths", userTopTracks);
-
-      getUserTopTracks(accessToken, 50, setUserTopTracks, "long_term");
-      tracks.set("allTime", userTopTracks);
-
-      handleLastLoginDataUpload("szucsmate2000@gmail.com", artists, tracks, genres);
+      handleLastLoginDataUpload(profileData.email, lastLoginUserData.artists, lastLoginUserData.tracks, lastLoginUserData.genres);
 
       sessionStorage.removeItem("spotifyAccessToken");
       navigate("/");

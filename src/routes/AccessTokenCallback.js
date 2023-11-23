@@ -9,7 +9,6 @@ function AccessTokenCallback() {
       // Extract the access_token from the URL hash
       const hashParams = new URLSearchParams(window.location.hash.slice(1));
       const accessToken = hashParams.get('access_token');
-      console.log(accessToken);
 
       if (accessToken) {
         // Save the access_token in sessionStorage or any other state management solution
