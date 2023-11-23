@@ -47,6 +47,10 @@ const ArtistCard = ({ imageUrl, name, index, artistId }) => {
         />
         <div className="artist-name">
           {index}. {name}
+          <img
+        src="/images/position_moved_up.svg"
+        alt="position"
+      />
         </div>
       </div>
 

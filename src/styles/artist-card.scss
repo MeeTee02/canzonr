@@ -16,6 +16,13 @@
         color: white;
         background-color: black;
         height: 60px;
+        position: relative;
+        
+        > img {
+            position: absolute;
+            right: 0;
+            margin-right: 20px;
+        }
     }
 }
 

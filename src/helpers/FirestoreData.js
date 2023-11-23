@@ -1,10 +1,12 @@
 import { initializeApp } from "firebase/app";
 import {
+  addDoc,
   collection,
   doc,
   getDocs,
   getFirestore,
   query,
+  serverTimestamp,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -45,12 +47,13 @@ export const handleLastLoginDataUpload = async (
     const q = query(collection(db, "Users"), where("email", "==", email));
 
     const querySnapshot = await getDocs(q);
-    querySnapshot.forEach(async (docSnapshot) => {
-      // Get the reference to the document
-      const userDocRef = doc(db, "Users", docSnapshot.id);
 
-      // Update the specific field (topArtists in this case) with a new value
-      await updateDoc(userDocRef, {
+    // Check if the document with the given email exists
+    if (querySnapshot.size === 0) {
+      // If it doesn't exist, add a new document
+      const newUserDocRef = await addDoc(collection(db, "Users"), {
+        email: email,
+        lastLogin: serverTimestamp(),
         topArtists: {
           allTime: artistsData.allTime,
           lastSixMonths: artistsData.lastSixMonths,
@@ -68,10 +71,35 @@ export const handleLastLoginDataUpload = async (
         },
       });
 
-      console.log("Document updated successfully");
-    });
-    
+      console.log("New document added successfully with ID: ", newUserDocRef.id);
+    } else {
+      // If it exists, update the existing document
+      querySnapshot.forEach(async (docSnapshot) => {
+        const userDocRef = doc(db, "Users", docSnapshot.id);
+        await updateDoc(userDocRef, {
+          lastLogin: serverTimestamp(),
+          topArtists: {
+            allTime: artistsData.allTime,
+            lastSixMonths: artistsData.lastSixMonths,
+            lastFourWeeks: artistsData.lastFourWeeks,
+          },
+          topTracks: {
+            allTime: tracksData.allTime,
+            lastSixMonths: tracksData.lastSixMonths,
+            lastFourWeeks: tracksData.lastFourWeeks,
+          },
+          topGenres: {
+            allTime: genresData.allTime,
+            lastSixMonths: genresData.lastSixMonths,
+            lastFourWeeks: genresData.lastFourWeeks,
+          },
+        });
+
+        console.log("Document updated successfully");
+      });
+    }
   } catch (error) {
     console.error("Error overwriting data:", error);
   }
 };
+

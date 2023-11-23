@@ -279,6 +279,14 @@ export const saveLastLoginUserData = async (
     );
     tracks.set("allTime", userTopTracksLongTerm);
 
+    artists.forEach((value, key, map) => {
+      map.set(key, value.map(artist => artist.id));
+    });
+
+    tracks.forEach((value, key, map) => {
+      map.set(key, value.map(track => track.id));
+    });
+
     return { artists, tracks, genres };
   } catch (error) {
     console.error("Error in saveLastLoginUserData:", error);
