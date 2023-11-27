@@ -71,7 +71,10 @@ export const handleLastLoginDataUpload = async (
         },
       });
 
-      console.log("New document added successfully with ID: ", newUserDocRef.id);
+      console.log(
+        "New document added successfully with ID: ",
+        newUserDocRef.id
+      );
     } else {
       // If it exists, update the existing document
       querySnapshot.forEach(async (docSnapshot) => {
@@ -103,3 +106,21 @@ export const handleLastLoginDataUpload = async (
   }
 };
 
+export const getUserListeningData = async (email) => {
+  try {
+    const q = query(collection(db, "Users"), where("email", "==", email));
+
+    const userSnapshot = await getDocs(q);
+
+    if (!userSnapshot.empty) {
+      // Access the first document in the snapshot
+      const userData = userSnapshot.docs[0].data();
+      return userData;
+    } else {
+      console.log("User not found with the specified email");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error getting data:", error);
+  }
+};

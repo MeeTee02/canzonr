@@ -4,11 +4,13 @@ import ArtistCard from "../components/ArtistCard";
 import Button from "@mui/material/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import { getUserTopArtists } from "../helpers/SpotifyApiRequests";
+import { getProfileData, getUserTopArtists } from "../helpers/SpotifyApiRequests";
+import { getUserListeningData } from "../helpers/FirestoreData";
 
 function Artists() {
   const [artistsData, setArtistsData] = useState(null);
   const [requestLimit, setRequestLimit] = useState(10);
+  const [userData, setUserData] = useState(null);
   const accessToken = sessionStorage.getItem("spotifyAccessToken");
 
   const handleRequestLimit = (limit) => {
@@ -16,8 +18,20 @@ function Artists() {
   };
 
   useEffect(() => {
-    getUserTopArtists(accessToken, requestLimit, setArtistsData, "long_term");
-  }, []);
+    const fetchData = async () => {
+      const profileData = await getProfileData(accessToken, setUserData);
+      await getUserTopArtists(accessToken, requestLimit, setArtistsData, "long_term");
+  
+      // 1. Get user data from db
+      const userListeningData = await getUserListeningData(profileData.email);
+      console.log(userListeningData);
+  
+      // 2. Create method check indexes of current and previous tops
+      // 3. Set a new property for each artist/track/genre, a boolean called positionMovedUp -> if property is missing then stagnant
+    };
+  
+    fetchData();
+  }, [accessToken, requestLimit, setUserData, setArtistsData]);
 
   return (
     <div className="content">
