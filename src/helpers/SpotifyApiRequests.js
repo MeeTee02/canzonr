@@ -31,7 +31,7 @@ export const getUserTopArtists = async (
     setUserTopArtists(userTopArtists);
 
     if (setGenresData) {
-      userTopGenres = calculateStateOfPosition((calculateTopGenres(userTopArtists, setGenresData)), userListeningData.topGenres, timeRange, true);
+      userTopGenres = logoutSave ? calculateTopGenres(userTopArtists, setGenresData) : calculateStateOfPosition((calculateTopGenres(userTopArtists, setGenresData)), userListeningData.topGenres, timeRange, true);
       setGenresData(userTopGenres);
     }
 
