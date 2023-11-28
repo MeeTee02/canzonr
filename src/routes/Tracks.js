@@ -4,10 +4,15 @@ import Button from "@mui/material/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import TrackCard from "../components/TrackCard";
-import { getUserTopTracks } from "../helpers/SpotifyApiRequests";
+import {
+  getProfileData,
+  getUserTopTracks,
+} from "../helpers/SpotifyApiRequests";
+import { getUserListeningData } from "../helpers/FirestoreData";
 
 function Tracks() {
   const [tracksData, setTracksData] = useState(null);
+  const [userListeningData, setUserListeningData] = useState(null);
   const [requestLimit, setRequestLimit] = useState(10);
   const accessToken = sessionStorage.getItem("spotifyAccessToken");
 
@@ -16,8 +21,28 @@ function Tracks() {
   };
 
   useEffect(() => {
-    getUserTopTracks(accessToken, requestLimit, setTracksData, "long_term");
-  }, []);
+    const fetchData = async () => {
+      try {
+        const profileData = await getProfileData(accessToken);
+
+        const data = await getUserListeningData(profileData.email);
+        setUserListeningData(data);
+
+        getUserTopTracks(
+          accessToken,
+          requestLimit,
+          setTracksData,
+          "long_term",
+          false,
+          data.topTracks
+        );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [accessToken, requestLimit]);
 
   return (
     <div className="content">
@@ -25,21 +50,48 @@ function Tracks() {
         <Button
           variant="contained"
           color="success"
-          onClick={() => getUserTopTracks(accessToken, requestLimit, setTracksData, "short_term")}
+          onClick={() =>
+            getUserTopTracks(
+              accessToken,
+              requestLimit,
+              setTracksData,
+              "short_term",
+              false,
+              userListeningData.topTracks
+            )
+          }
         >
           Last 4 weeks
         </Button>
         <Button
           variant="contained"
           color="secondary"
-          onClick={() => getUserTopTracks(accessToken, requestLimit, setTracksData, "medium_term")}
+          onClick={() =>
+            getUserTopTracks(
+              accessToken,
+              requestLimit,
+              setTracksData,
+              "medium_term",
+              false,
+              userListeningData.topTracks
+            )
+          }
         >
           Last 6 months
         </Button>
         <Button
           variant="contained"
           color="error"
-          onClick={() => getUserTopTracks(accessToken, requestLimit, setTracksData, "long_term")}
+          onClick={() =>
+            getUserTopTracks(
+              accessToken,
+              requestLimit,
+              setTracksData,
+              "long_term",
+              false,
+              userListeningData.topTracks
+            )
+          }
         >
           All time
         </Button>
@@ -63,8 +115,7 @@ function Tracks() {
               imageUrl={track.album.images[1].url}
               name={track.name}
               index={++index}
-              accessToken={accessToken}
-              trackUri={track.uri}
+              positionImageRoute={track.positionImageRoute}
               key={track.id}
             />
           ))

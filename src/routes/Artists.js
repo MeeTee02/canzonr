@@ -4,13 +4,16 @@ import ArtistCard from "../components/ArtistCard";
 import Button from "@mui/material/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import { getProfileData, getUserTopArtists } from "../helpers/SpotifyApiRequests";
+import {
+  getProfileData,
+  getUserTopArtists,
+} from "../helpers/SpotifyApiRequests";
 import { getUserListeningData } from "../helpers/FirestoreData";
 
 function Artists() {
   const [artistsData, setArtistsData] = useState(null);
+  const [userListeningData, setUserListeningData] = useState(null);
   const [requestLimit, setRequestLimit] = useState(10);
-  const [userData, setUserData] = useState(null);
   const accessToken = sessionStorage.getItem("spotifyAccessToken");
 
   const handleRequestLimit = (limit) => {
@@ -19,19 +22,27 @@ function Artists() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const profileData = await getProfileData(accessToken, setUserData);
-      await getUserTopArtists(accessToken, requestLimit, setArtistsData, "long_term");
-  
-      // 1. Get user data from db
-      const userListeningData = await getUserListeningData(profileData.email);
-      console.log(userListeningData);
-  
-      // 2. Create method check indexes of current and previous tops
-      // 3. Set a new property for each artist/track/genre, a boolean called positionMovedUp -> if property is missing then stagnant
+      try {
+        const profileData = await getProfileData(accessToken);
+
+        const data = await getUserListeningData(profileData.email);
+        setUserListeningData(data);
+
+        getUserTopArtists(
+          accessToken,
+          requestLimit,
+          setArtistsData,
+          "long_term",
+          false,
+          data
+        );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
-  
+
     fetchData();
-  }, [accessToken, requestLimit, setUserData, setArtistsData]);
+  }, [accessToken, requestLimit]);
 
   return (
     <div className="content">
@@ -39,21 +50,48 @@ function Artists() {
         <Button
           variant="contained"
           color="success"
-          onClick={() => getUserTopArtists(accessToken, requestLimit, setArtistsData, "short_term")}
+          onClick={() =>
+            getUserTopArtists(
+              accessToken,
+              requestLimit,
+              setArtistsData,
+              "short_term",
+              false,
+              userListeningData
+            )
+          }
         >
           Last 4 weeks
         </Button>
         <Button
           variant="contained"
           color="secondary"
-          onClick={() => getUserTopArtists(accessToken, requestLimit, setArtistsData, "medium_term")}
+          onClick={() =>
+            getUserTopArtists(
+              accessToken,
+              requestLimit,
+              setArtistsData,
+              "medium_term",
+              false,
+              userListeningData
+            )
+          }
         >
           Last 6 months
         </Button>
         <Button
           variant="contained"
           color="error"
-          onClick={() => getUserTopArtists(accessToken, requestLimit, setArtistsData, "long_term")}
+          onClick={() =>
+            getUserTopArtists(
+              accessToken,
+              requestLimit,
+              setArtistsData,
+              "long_term",
+              false,
+              userListeningData
+            )
+          }
         >
           All time
         </Button>
@@ -77,6 +115,7 @@ function Artists() {
               name={artist.name}
               index={++index}
               artistId={artist.id}
+              positionImageRoute={artist.positionImageRoute}
               key={artist.id}
             />
           ))

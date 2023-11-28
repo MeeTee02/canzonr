@@ -3,7 +3,7 @@ import "../styles/artist-card.scss";
 import ReactCardFlip from "react-card-flip";
 import axios from "axios";
 
-const ArtistCard = ({ imageUrl, name, index, artistId }) => {
+const ArtistCard = ({ imageUrl, name, index, artistId, positionImageRoute }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [topTracks, setTopTracks] = useState(null);
   const trackLimit = 4;
@@ -25,7 +25,6 @@ const ArtistCard = ({ imageUrl, name, index, artistId }) => {
           },
         })
         .then((response) => {
-            console.log('API Response:', response.data.tracks);
           // Handle successful response
           setTopTracks(response.data.tracks);
         })
@@ -48,7 +47,7 @@ const ArtistCard = ({ imageUrl, name, index, artistId }) => {
         <div className="artist-name">
           {index}. {name}
           <img
-        src="/images/position_moved_up.svg"
+        src={positionImageRoute}
         alt="position"
       />
         </div>

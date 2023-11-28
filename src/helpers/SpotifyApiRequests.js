@@ -1,10 +1,13 @@
 import axios from "axios";
+import { calculateStateOfPosition } from "./GeneralHelpers";
 
 export const getUserTopArtists = async (
   accessToken,
   requestLimit,
   setUserTopArtists,
   timeRange,
+  logoutSave,
+  userListeningData,
   setGenresData = null
 ) => {
   let userTopArtists = [];
@@ -23,11 +26,13 @@ export const getUserTopArtists = async (
       }
     );
 
-    userTopArtists = response.data.items;
+    userTopArtists = logoutSave ? response.data.items : calculateStateOfPosition(response.data.items, userListeningData.topArtists, timeRange);
+
     setUserTopArtists(userTopArtists);
 
     if (setGenresData) {
-      userTopGenres = calculateTopGenres(userTopArtists, setGenresData);
+      userTopGenres = calculateStateOfPosition((calculateTopGenres(userTopArtists, setGenresData)), userListeningData.topGenres, timeRange, true);
+      setGenresData(userTopGenres);
     }
 
     return { userTopArtists, userTopGenres };
@@ -41,7 +46,9 @@ export const getUserTopTracks = async (
   accessToken,
   requestLimit,
   setUserTopTracks,
-  timeRange
+  timeRange,
+  logoutSave,
+  userListeningDataTracks
 ) => {
   try {
     const response = await axios.get(
@@ -56,7 +63,8 @@ export const getUserTopTracks = async (
       }
     );
 
-    const userTopTracks = response.data.items;
+    const userTopTracks = logoutSave ? response.data.items : calculateStateOfPosition(response.data.items, userListeningDataTracks, timeRange);
+
     setUserTopTracks(userTopTracks);
 
     return userTopTracks;
@@ -195,7 +203,7 @@ export const getRecommendedArtists = (
     });
 };
 
-export const getProfileData = async (accessToken, setUserData) => {
+export const getProfileData = async (accessToken, setUserData = null) => {
   try {
     const response = await axios.get("https://api.spotify.com/v1/me", {
       headers: {
@@ -204,7 +212,9 @@ export const getProfileData = async (accessToken, setUserData) => {
     });
 
     // Handle successful response
-    setUserData(response.data);
+    if(setUserData) {
+      setUserData(response.data);
+    }
     return response.data;
   } catch (error) {
     // Handle error
@@ -230,6 +240,8 @@ export const saveLastLoginUserData = async (
       requestLimit,
       setUserTopArtists,
       "short_term",
+      true,
+      [],
       setUserTopGenres
     );
     artists.set("lastFourWeeks", userTopArtistsShortTerm.userTopArtists);
@@ -240,6 +252,8 @@ export const saveLastLoginUserData = async (
       requestLimit,
       setUserTopArtists,
       "medium_term",
+      true,
+      [],
       setUserTopGenres
     );
     artists.set("lastSixMonths", userTopArtistsMediumTerm.userTopArtists);
@@ -250,6 +264,8 @@ export const saveLastLoginUserData = async (
       requestLimit,
       setUserTopArtists,
       "long_term",
+      true,
+      [],
       setUserTopGenres
     );
     artists.set("allTime", userTopArtistsLongTerm.userTopArtists);
@@ -259,7 +275,8 @@ export const saveLastLoginUserData = async (
       accessToken,
       requestLimit,
       setUserTopTracks,
-      "short_term"
+      "short_term",
+      true
     );
     tracks.set("lastFourWeeks", userTopTracksShortTerm);
 
@@ -267,7 +284,8 @@ export const saveLastLoginUserData = async (
       accessToken,
       requestLimit,
       setUserTopTracks,
-      "medium_term"
+      "medium_term",
+      true
     );
     tracks.set("lastSixMonths", userTopTracksMediumTerm);
 
@@ -275,7 +293,8 @@ export const saveLastLoginUserData = async (
       accessToken,
       requestLimit,
       setUserTopTracks,
-      "long_term"
+      "long_term",
+      true
     );
     tracks.set("allTime", userTopTracksLongTerm);
 

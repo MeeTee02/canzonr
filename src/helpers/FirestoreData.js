@@ -118,7 +118,7 @@ export const getUserListeningData = async (email) => {
       return userData;
     } else {
       console.log("User not found with the specified email");
-      return null;
+      return [];
     }
   } catch (error) {
     console.error("Error getting data:", error);

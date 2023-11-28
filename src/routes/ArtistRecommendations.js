@@ -55,7 +55,9 @@ function ArtistRecommendations() {
         accessToken,
         requestLimit,
         setUserTopArtists,
-        "long_term"
+        "long_term",
+        true,
+        []
       );
     }
 

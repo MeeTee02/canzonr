@@ -16,7 +16,6 @@ import {
 
 function Navbar() {
   const [sidebar, setSidebar] = useState(false);
-  const [userData, setUserData] = useState(null);
   const [userTopArtists, setUserTopArtists] = useState(null);
   const [userTopTracks, setUserTopTracks] = useState(null);
   const [userTopGenres, setUserTopGenres] = useState(null);
@@ -30,7 +29,7 @@ function Navbar() {
   const manageAuth = async () => {
     if (accessToken) {
 
-      const profileData = await getProfileData(accessToken, setUserData); 
+      const profileData = await getProfileData(accessToken); 
       const lastLoginUserData = await saveLastLoginUserData(accessToken, 50, setUserTopArtists, setUserTopGenres, setUserTopTracks);
 
       handleLastLoginDataUpload(profileData.email, lastLoginUserData.artists, lastLoginUserData.tracks, lastLoginUserData.genres);

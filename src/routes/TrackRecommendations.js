@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import "../styles/track-recommendations.scss"; // Import your own CSS file for styling
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -123,12 +122,14 @@ function TrackRecommendations() {
         accessToken,
         requestLimit,
         setUserTopArtists,
-        "long_term"
+        "long_term",
+        true,
+        []
       );
     }
 
     if (!userTopTracks) {
-      getUserTopTracks(accessToken, requestLimit, setUserTopTracks);
+      getUserTopTracks(accessToken, requestLimit, setUserTopTracks, "long_term", true);
     }
 
     if (!allGenres) {
