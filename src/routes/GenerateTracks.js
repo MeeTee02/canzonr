@@ -5,7 +5,7 @@ import GenreBadge from "../components/GenreBadge";
 import DataSlider from "../components/DataSlider";
 import TrackBadge from "../components/TrackBadge";
 import { Button } from "@mui/material";
-import { getAllGenres } from "../helpers/SpotifyApiRequests";
+import { createPlaylist, getAllGenres } from "../helpers/SpotifyApiRequests";
 
 function GenerateTracks() {
   const [allGenres, setAllGenres] = useState(null);
@@ -128,6 +128,7 @@ function GenerateTracks() {
             onSwitchChange={(checked) => setTempoSwitchChecked(checked)}
           />
         </div>
+        <div className="action-buttons">
         <Button
           variant="contained"
           color="success"
@@ -135,6 +136,14 @@ function GenerateTracks() {
         >
           Recommendation
         </Button>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => createPlaylist(accessToken, recommendedTracks, true)}
+        >
+          Generate Playlist
+        </Button>
+        </div>
       </div>
       <div className="type-container">
         <div className="title">All Genres</div>

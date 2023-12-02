@@ -5,6 +5,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import TrackCard from "../components/TrackCard";
 import {
+  createPlaylist,
   getProfileData,
   getUserTopTracks,
 } from "../helpers/SpotifyApiRequests";
@@ -106,6 +107,13 @@ function Tracks() {
           <Dropdown.Item eventKey={40}>40</Dropdown.Item>
           <Dropdown.Item eventKey={50}>50</Dropdown.Item>
         </DropdownButton>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => createPlaylist(accessToken, tracksData, false)}
+        >
+          Generate Playlist
+        </Button>
       </div>
       <div className="tracks-container">
         {tracksData ? (
@@ -116,6 +124,8 @@ function Tracks() {
               name={track.name}
               index={++index}
               positionImageRoute={track.positionImageRoute}
+              accessToken={accessToken}
+              trackUri={track.uri}
               key={track.id}
             />
           ))

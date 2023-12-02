@@ -9,6 +9,7 @@ import TrackBadge from "../components/TrackBadge";
 import Button from "@mui/material/Button";
 import GenreBadge from "../components/GenreBadge";
 import {
+  createPlaylist,
   getAllGenres,
   getRecommendedTracks,
   getSearchedArtists,
@@ -177,6 +178,13 @@ function TrackRecommendations() {
           }
         >
           Recommendation
+        </Button>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => createPlaylist(accessToken, recommendedTracks, false)}
+        >
+          Generate Playlist
         </Button>
       </div>
 

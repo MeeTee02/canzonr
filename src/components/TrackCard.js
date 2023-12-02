@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import "../styles/track-card.scss";
 import ReactCardFlip from "react-card-flip";
+import TrackPlayer from "./TrackPlayer";
 
-const TrackCard = ({ artists, imageUrl, name, index, positionImageRoute }) => {
+const TrackCard = ({ artists, imageUrl, name, index, positionImageRoute, accessToken, trackUri }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleFlip = () => {
@@ -37,7 +38,10 @@ const TrackCard = ({ artists, imageUrl, name, index, positionImageRoute }) => {
           <p>Loading...</p>
         )}
         {isFlipped ? (
-          <div className="play-track">Web player soon</div>
+          <TrackPlayer
+          accessToken={accessToken}
+          trackUri={trackUri}
+        />
         ) : (
           <div></div>
         )}

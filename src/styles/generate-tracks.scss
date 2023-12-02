@@ -19,10 +19,17 @@
             width: 70%;
         }
 
-        > Button {
-            width: 30%;
-            height: 30%;
-            align-self: center;
+        > .action-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+
+            > Button {
+                width: 100%;
+                align-self: center;
+            }
         }
     }
 
@@ -37,7 +44,6 @@
         width: 90%;
         gap: 10px;
         
-
         > .title {
             font-size: 24px;
             align-self: center;

@@ -1,5 +1,10 @@
 import axios from "axios";
-import { calculateStateOfPosition } from "./GeneralHelpers";
+import {
+  calculateStateOfPosition,
+  getCurrentDateFormatted,
+} from "./GeneralHelpers";
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
 
 export const getUserTopArtists = async (
   accessToken,
@@ -26,12 +31,25 @@ export const getUserTopArtists = async (
       }
     );
 
-    userTopArtists = logoutSave ? response.data.items : calculateStateOfPosition(response.data.items, userListeningData.topArtists, timeRange);
+    userTopArtists = logoutSave
+      ? response.data.items
+      : calculateStateOfPosition(
+          response.data.items,
+          userListeningData.topArtists,
+          timeRange
+        );
 
     setUserTopArtists(userTopArtists);
 
     if (setGenresData) {
-      userTopGenres = logoutSave ? calculateTopGenres(userTopArtists, setGenresData) : calculateStateOfPosition((calculateTopGenres(userTopArtists, setGenresData)), userListeningData.topGenres, timeRange, true);
+      userTopGenres = logoutSave
+        ? calculateTopGenres(userTopArtists, setGenresData)
+        : calculateStateOfPosition(
+            calculateTopGenres(userTopArtists, setGenresData),
+            userListeningData.topGenres,
+            timeRange,
+            true
+          );
       setGenresData(userTopGenres);
     }
 
@@ -63,7 +81,13 @@ export const getUserTopTracks = async (
       }
     );
 
-    const userTopTracks = logoutSave ? response.data.items : calculateStateOfPosition(response.data.items, userListeningDataTracks, timeRange);
+    const userTopTracks = logoutSave
+      ? response.data.items
+      : calculateStateOfPosition(
+          response.data.items,
+          userListeningDataTracks,
+          timeRange
+        );
 
     setUserTopTracks(userTopTracks);
 
@@ -212,7 +236,7 @@ export const getProfileData = async (accessToken, setUserData = null) => {
     });
 
     // Handle successful response
-    if(setUserData) {
+    if (setUserData) {
       setUserData(response.data);
     }
     return response.data;
@@ -299,11 +323,17 @@ export const saveLastLoginUserData = async (
     tracks.set("allTime", userTopTracksLongTerm);
 
     artists.forEach((value, key, map) => {
-      map.set(key, value.map(artist => artist.id));
+      map.set(
+        key,
+        value.map((artist) => artist.id)
+      );
     });
 
     tracks.forEach((value, key, map) => {
-      map.set(key, value.map(track => track.id));
+      map.set(
+        key,
+        value.map((track) => track.id)
+      );
     });
 
     return { artists, tracks, genres };
@@ -311,6 +341,94 @@ export const saveLastLoginUserData = async (
     console.error("Error in saveLastLoginUserData:", error);
     // Handle the error or re-throw it if needed
     throw error;
+  }
+};
+
+export const playlistAlreadyExists = async (accessToken, playlistName) => {
+  try {
+    const response = await axios.get(
+      "https://api.spotify.com/v1/me/playlists",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const playlists = response.data.items;
+    return playlists.some((playlist) => playlist.name === playlistName);
+  } catch (error) {
+    console.error("Error checking if playlist exists:", error);
+    return false;
+  }
+};
+
+export const createPlaylist = async (accessToken, trackObjects, isFromTop) => {
+  try {
+    // Check if the playlist already exists
+    const playlistName = isFromTop
+      ? "Canzonr_Top_" + getCurrentDateFormatted()
+      : "Canzonr_Recommendations_" + getCurrentDateFormatted();
+    const doesPlaylistExist = await playlistAlreadyExists(
+      accessToken,
+      playlistName
+    );
+
+    if (!trackObjects.length) {
+      console.log('No tracks were provided');
+      return;
+    }
+
+    if (doesPlaylistExist) {
+      console.log(`Playlist "${playlistName}" already exists.`);
+      return;
+    }
+
+    const createPlaylistResponse = await axios.post(
+      "https://api.spotify.com/v1/me/playlists",
+      {
+        name: playlistName,
+        public: false,
+        collaborative: false,
+        description: isFromTop
+          ? "Playlist created by Canzonr from your top tracks of a certain period at " +
+            getCurrentDateFormatted()
+          : "Playlist created by Canzonr from your recommended tracks at " +
+            getCurrentDateFormatted(),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const playlistId = createPlaylistResponse.data.id;
+
+    const addTracksResponse = await axios.post(
+      `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+      {
+        uris: trackObjects.map((track) => track.uri),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (addTracksResponse.status === 201) {
+      console.log(
+        `Playlist "${playlistName}" created successfully with ${trackObjects.length} tracks.`
+      );
+    } else {
+      console.error("Failed to add tracks to the playlist.");
+    }
+  } catch (error) {
+    console.error("Error creating playlist:", error);
   }
 };
 

@@ -1,21 +1,32 @@
-import React, { useEffect } from 'react';   
+import React, { useEffect } from "react";
 
 const SpotifyAuth = () => {
-
   useEffect(() => {
     const performSpotifyOAuth = () => {
       try {
         // Replace with your Spotify Client ID and Redirect URI
-        const clientId = '774904b9142d43b2872781c7c387eb6b';
-        const redirectUri = 'http://localhost:3000/callback'; // Should match the URL set in the Spotify Dashboard
-        const scopes = ['user-read-private', 'user-read-email', 'user-top-read']; // Add required scopes
+        const clientId = "774904b9142d43b2872781c7c387eb6b";
+        const redirectUri = "http://localhost:3000/callback"; // Should match the URL set in the Spotify Dashboard
+        const scopes = [
+          "user-read-private",
+          "user-read-email",
+          "user-top-read",
+          "playlist-modify-public",
+          "playlist-modify-private",
+          "user-read-playback-state",
+          "user-modify-playback-state",
+          "streaming",
+          "user-library-read",
+        ]; // Add required scopes
 
         // Redirect the user to the Spotify authorization URL
-        const authEndpoint = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scopes.join('%20')}&response_type=token&show_dialog=true`;
+        const authEndpoint = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(
+          redirectUri
+        )}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`;
 
         window.location.href = authEndpoint;
       } catch (error) {
-        console.error('Error initiating Spotify OAuth:', error);
+        console.error("Error initiating Spotify OAuth:", error);
         // Handle error scenarios if needed
       }
     };
