@@ -9,6 +9,8 @@ import {
   getUserTopArtists,
 } from "../helpers/SpotifyApiRequests";
 import { getUserListeningData } from "../helpers/FirestoreData";
+import ExportButton from "../components/ExportButton";
+import { getCurrentDateFormatted } from "../helpers/GeneralHelpers";
 
 function Artists() {
   const [artistsData, setArtistsData] = useState(null);
@@ -106,6 +108,10 @@ function Artists() {
           <Dropdown.Item eventKey={40}>40</Dropdown.Item>
           <Dropdown.Item eventKey={50}>50</Dropdown.Item>
         </DropdownButton>
+
+        {artistsData && (
+          <ExportButton data={artistsData} filename={`my_top_artists_${getCurrentDateFormatted()}`} />
+        )}
       </div>
       <div className="artists-container">
         {artistsData ? (

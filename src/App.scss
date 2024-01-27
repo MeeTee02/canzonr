@@ -33,7 +33,7 @@ body, html {
   justify-content: space-evenly;
   font-size: 25px;
   background-color: #000;
-  color: #000;
+  color: #fff;
 }
 
 /* Navbar CSS */
@@ -55,6 +55,10 @@ body, html {
   font-size: 2rem;
   background: none;
   color: #000;
+
+  &.not-logged-in {
+    visibility: hidden;
+  }
 }
 
 .nav-menu {

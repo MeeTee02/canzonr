@@ -10,6 +10,8 @@ import {
   getUserTopTracks,
 } from "../helpers/SpotifyApiRequests";
 import { getUserListeningData } from "../helpers/FirestoreData";
+import ExportButton from "../components/ExportButton";
+import { getCurrentDateFormatted } from "../helpers/GeneralHelpers";
 
 function Tracks() {
   const [tracksData, setTracksData] = useState(null);
@@ -114,6 +116,12 @@ function Tracks() {
         >
           Generate Playlist
         </Button>
+        {tracksData && (
+          <ExportButton
+            data={tracksData}
+            filename={`my_top_tracks_${getCurrentDateFormatted()}`}
+          />
+        )}
       </div>
       <div className="tracks-container">
         {tracksData ? (

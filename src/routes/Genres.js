@@ -2,9 +2,16 @@ import React, { useEffect, useState } from "react";
 import "../styles/genres.scss"; // Import your own CSS file for styling
 import Button from "@mui/material/Button";
 import GenreCard from "../components/GenreCard";
-import { getProfileData, getUserTopArtists } from "../helpers/SpotifyApiRequests";
-import { capitalizeFirstLetters } from "../helpers/GeneralHelpers";
+import {
+  getProfileData,
+  getUserTopArtists,
+} from "../helpers/SpotifyApiRequests";
+import {
+  capitalizeFirstLetters,
+  getCurrentDateFormatted,
+} from "../helpers/GeneralHelpers";
 import { getUserListeningData } from "../helpers/FirestoreData";
+import ExportButton from "../components/ExportButton";
 
 function Genres() {
   const [artistsData, setArtistsData] = useState(null);
@@ -33,6 +40,7 @@ function Genres() {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
+      console.log(genresData);
     };
 
     fetchData();
@@ -44,24 +52,61 @@ function Genres() {
         <Button
           variant="contained"
           color="success"
-          onClick={() => getUserTopArtists(accessToken, requestLimit, setArtistsData, "short_term", false, userListeningData, setGenresData)}
+          onClick={() =>
+            getUserTopArtists(
+              accessToken,
+              requestLimit,
+              setArtistsData,
+              "short_term",
+              false,
+              userListeningData,
+              setGenresData
+            )
+          }
         >
           Last 4 weeks
         </Button>
         <Button
           variant="contained"
           color="secondary"
-          onClick={() => getUserTopArtists(accessToken, requestLimit, setArtistsData, "medium_term", false, userListeningData, setGenresData)}
+          onClick={() =>
+            getUserTopArtists(
+              accessToken,
+              requestLimit,
+              setArtistsData,
+              "medium_term",
+              false,
+              userListeningData,
+              setGenresData
+            )
+          }
         >
           Last 6 months
         </Button>
         <Button
           variant="contained"
           color="error"
-          onClick={() => getUserTopArtists(accessToken, requestLimit, setArtistsData, "long_term", false, userListeningData, setGenresData)}
+          onClick={() =>
+            getUserTopArtists(
+              accessToken,
+              requestLimit,
+              setArtistsData,
+              "long_term",
+              false,
+              userListeningData,
+              setGenresData
+            )
+          }
         >
           All time
         </Button>
+        {genresData && (
+          <ExportButton
+            data={genresData}
+            filename={`my_top_genres_${getCurrentDateFormatted()}`}
+            isGenre={true}
+          />
+        )}
       </div>
       <div className="genres-container">
         {genresData ? (

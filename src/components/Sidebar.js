@@ -45,7 +45,7 @@ function Navbar() {
     <>
       <IconContext.Provider value={{ color: "undefined" }}>
         <div className="navbar">
-          <Link to="#" className="menu-bars">
+          <Link to="#" className={`menu-bars ${accessToken ? '' : 'not-logged-in'}`}>
             <FaIcons.FaBars onClick={showSidebar} />
           </Link>
           <Button

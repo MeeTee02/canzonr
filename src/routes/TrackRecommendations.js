@@ -256,9 +256,9 @@ function TrackRecommendations() {
         <div className="type-list">
           {userTopTracks ? (
             userTopTracks.map((track) => {
-              return track.album.images[2] ? (
+              return track.album.images[1] ? (
                 <TrackBadge
-                  imageUrl={track.album.images[2].url}
+                  imageUrl={track.album.images[1].url}
                   name={track.name}
                   trackId={track.id}
                   isSelected={selectedTracks.includes(track.id)}
@@ -296,9 +296,9 @@ function TrackRecommendations() {
         <div className="type-list">
           {recommendedTracks ? (
             recommendedTracks.map((track) => {
-              return track.album.images[2] ? (
+              return track.album.images[1] ? (
                 <TrackBadge
-                  imageUrl={track.album.images[2].url}
+                  imageUrl={track.album.images[1].url}
                   name={track.name}
                   trackId={track.id}
                   key={track.id}
